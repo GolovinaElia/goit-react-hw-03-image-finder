@@ -1,10 +1,8 @@
 // import PropTypes from 'prop-types';
 import style from './ImageGalleryItem.module.css';
 
-const ImageGalleryItem = ({ onSubmit }) => (
-  <li className={style.ImageGalleryItem}>
-    <img src="" alt="" className={style.ImageGalleryItemImage} />
-  </li>
+const ImageGalleryItem = ({ webformatURL, user }) => (
+  <img src={webformatURL} alt={user} className={style.ImageGalleryItemImage} />
 );
 
 // FeedbackOption.propTypes = {

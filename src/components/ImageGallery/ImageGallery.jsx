@@ -1,9 +1,14 @@
 // import PropTypes from 'prop-types';
 import style from './ImageGallery.module.css';
+import ImageGalleryItem from '../ImageGalleryItem';
 
-const ImageGallery = ({ onSubmit }) => (
+const ImageGallery = ({ hits }) => (
   <ul className={style.ImageGallery}>
-    {/* <!-- Набор <li> с изображениями --> */}
+    {hits.map(({ id, webformatURL, user }) => (
+      <li key={id} className={style.ImageGalleryItem}>
+        <ImageGalleryItem src={webformatURL} alt={user} />
+      </li>
+    ))}
   </ul>
 );
 
