@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
+import Loader from 'react-loader-spinner';
 import Searchbar from './components/Searchbar';
-// import ImageGallery from './components/ImageGallery';
-// import Button from './components/Button';
+import ImageGallery from './components/ImageGallery';
+import Button from './components/Button';
 import Modal from './components/Modal';
-import axios from 'axios';
+import fetchHits from './services/api';
 
 class App extends Component {
   state = {
     hits: [],
     currentPage: 1,
     searchQuery: '',
-    showMdal: false,
+    showModal: false,
+    largeImageUrl: '',
+    isLoading: false,
+    error: null,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -20,47 +24,76 @@ class App extends Component {
   }
 
   onChangeQuery = query => {
-    this.setState({ searchQuery: query, currentPage: 1, hits: [] });
+    this.setState({
+      searchQuery: query,
+      currentPage: 1,
+      hits: [],
+      error: null,
+    });
   };
 
   fetchHits = () => {
     const { currentPage, searchQuery } = this.state;
-    axios
-      .get(
-        `https://pixabay.com/api/?q=${searchQuery}&page=${currentPage}&key=20750670-b2684aaeba19f295ef3b80ff2&image_type=photo&orientation=horizontal&per_page=12`,
-      )
-      .then(response =>
+    const options = { currentPage, searchQuery };
+
+    this.setState({ isLoading: true });
+
+    fetchHits(options)
+      .then(hits =>
         this.setState(prevState => ({
-          hits: [...prevState.hits, ...response.data.hits],
+          hits: [...prevState.hits, ...hits],
           currentPage: prevState.currentPage + 1,
         })),
-      );
+      )
+      .catch(error => this.setState({ error }))
+      .finally(() => this.setState({ isLoading: false }));
+  };
+
+  scrollBtn = () => {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: 'smooth',
+    });
   };
 
   toggleModal = () => {
-    this.setState(({ showMdal }) => ({
-      showMdal: !showMdal,
+    this.setState(({ showModal }) => ({
+      showModal: !showModal,
     }));
   };
 
+  handleClickImg = url => {
+    this.setState({ largeImageUrl: url });
+  };
+
   render() {
-    const { showMdal, hits } = this.state;
+    const { showModal, hits, isLoading, error } = this.state;
+    const renderButton = hits.length > 0 && !isLoading;
+    const scroll = this.scrollBtn();
+
     return (
       <>
+        {error && <h1>404 error: File not found</h1>}
+
         <Searchbar onSubmit={this.onChangeQuery} />
-        {/* <ImageGallery hits={hits} /> */}
-        <ul>
-          {hits.map(({ id, webformatURL, user }) => (
-            <li key={id}>
-              <img src={webformatURL} alt={user} />
-            </li>
-          ))}
-        </ul>
-        {/* <Button onClick={this.fetchHits} /> */}
-        <button type="button" onClick={this.fetchHits}>
-          Load more
-        </button>
-        {showMdal && <Modal onClose={this.toggleModal} />}
+
+        {isLoading && (
+          <Loader
+            type="ThreeDots"
+            color="#00BFFF"
+            height={80}
+            width={80}
+            timeout={3000}
+          />
+        )}
+
+        <ImageGallery hits={hits} />
+
+        {renderButton && <Button onClick={this.fetchHits} />}
+
+        {Button && scroll}
+
+        {showModal && <Modal onClose={this.toggleModal} />}
       </>
     );
   }

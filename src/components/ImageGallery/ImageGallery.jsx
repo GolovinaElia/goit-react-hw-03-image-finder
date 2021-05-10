@@ -1,4 +1,4 @@
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import style from './ImageGallery.module.css';
 import ImageGalleryItem from '../ImageGalleryItem';
 
@@ -12,9 +12,12 @@ const ImageGallery = ({ hits }) => (
   </ul>
 );
 
-// FeedbackOption.propTypes = {
-//   options: PropTypes.arrayOf(PropTypes.string).isRequired,
-//   onLeaveFeedback: PropTypes.func.isRequired,
-// };
+ImageGallery.propTypes = {
+  hits: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+    }),
+  ).isRequired,
+};
 
 export default ImageGallery;

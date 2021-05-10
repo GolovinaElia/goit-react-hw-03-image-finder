@@ -1,4 +1,3 @@
-// import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import style from './Modal.module.css';
 import { createPortal } from 'react-dom';
@@ -26,20 +25,16 @@ class Modal extends Component {
   };
 
   render() {
+    const { src, user } = this.state;
     return createPortal(
       <div className={style.Overlay} onClick={this.handleBackdropClick}>
         <div className={style.Modal}>
-          <img src="" alt="" />
+          <img src={src} alt={user} />
         </div>
       </div>,
       modalRoot,
     );
   }
 }
-
-// FeedbackOption.propTypes = {
-//   options: PropTypes.arrayOf(PropTypes.string).isRequired,
-//   onLeaveFeedback: PropTypes.func.isRequired,
-// };
 
 export default Modal;
