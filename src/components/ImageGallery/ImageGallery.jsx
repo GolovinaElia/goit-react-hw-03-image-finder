@@ -2,11 +2,16 @@ import PropTypes from 'prop-types';
 import style from './ImageGallery.module.css';
 import ImageGalleryItem from '../ImageGalleryItem';
 
-const ImageGallery = ({ hits }) => (
+const ImageGallery = ({ hits, imgModal }) => (
   <ul className={style.ImageGallery}>
-    {hits.map(({ id, webformatURL, user }) => (
+    {hits.map(({ id, webformatURL, largeImageURL, user }) => (
       <li key={id} className={style.ImageGalleryItem}>
-        <ImageGalleryItem src={webformatURL} alt={user} />
+        <ImageGalleryItem
+          webformatURL={webformatURL}
+          largeImageURL={largeImageURL}
+          user={user}
+          imgModal={imgModal}
+        />
       </li>
     ))}
   </ul>

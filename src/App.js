@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import Loader from 'react-loader-spinner';
+import './App.module.css';
+import Loader from './components/Loader';
 import Searchbar from './components/Searchbar';
 import ImageGallery from './components/ImageGallery';
 import Button from './components/Button';
@@ -12,7 +13,7 @@ class App extends Component {
     currentPage: 1,
     searchQuery: '',
     showModal: false,
-    largeImageUrl: '',
+    largeImageURL: '',
     isLoading: false,
     error: null,
   };
@@ -63,11 +64,12 @@ class App extends Component {
   };
 
   handleClickImg = url => {
-    this.setState({ largeImageUrl: url });
+    this.setState({ largeImageURL: url });
+    this.toggleModal();
   };
 
   render() {
-    const { showModal, hits, isLoading, error } = this.state;
+    const { showModal, hits, isLoading, error, largeImageURL } = this.state;
     const renderButton = hits.length > 0 && !isLoading;
     const scroll = this.scrollBtn();
 
@@ -77,23 +79,19 @@ class App extends Component {
 
         <Searchbar onSubmit={this.onChangeQuery} />
 
-        {isLoading && (
-          <Loader
-            type="ThreeDots"
-            color="#00BFFF"
-            height={80}
-            width={80}
-            timeout={3000}
-          />
-        )}
+        {isLoading && <Loader />}
 
-        <ImageGallery hits={hits} />
+        <ImageGallery hits={hits} imgModal={this.handleClickImg} />
 
         {renderButton && <Button onClick={this.fetchHits} />}
 
         {Button && scroll}
 
-        {showModal && <Modal onClose={this.toggleModal} />}
+        {showModal && (
+          <Modal onClose={this.toggleModal}>
+            <img src={largeImageURL} alt="" />
+          </Modal>
+        )}
       </>
     );
   }
