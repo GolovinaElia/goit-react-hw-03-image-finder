@@ -22,6 +22,9 @@ class App extends Component {
     if (prevState.searchQuery !== this.state.searchQuery) {
       this.fetchHits();
     }
+    setTimeout(() => {
+      this.scrollBtn();
+    }, 1000);
   }
 
   onChangeQuery = query => {
@@ -71,7 +74,6 @@ class App extends Component {
   render() {
     const { showModal, hits, isLoading, error, largeImageURL } = this.state;
     const renderButton = hits.length > 0 && !isLoading;
-    const scroll = this.scrollBtn();
 
     return (
       <>
@@ -84,8 +86,6 @@ class App extends Component {
         <ImageGallery hits={hits} imgModal={this.handleClickImg} />
 
         {renderButton && <Button onClick={this.fetchHits} />}
-
-        {Button && scroll}
 
         {showModal && (
           <Modal onClose={this.toggleModal}>
